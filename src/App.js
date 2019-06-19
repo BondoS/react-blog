@@ -1,16 +1,14 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Header, Footer } from "./components/layout";
 import Allposts from "./components/AllPosts/allPosts";
 
 function App() {
   return (
-    <div className="container">
+    <Fragment>
       <Header />
-      <div className="container">
-        <Allposts />
-      </div>
+      <Allposts />
       <Footer />
-    </div>
+    </Fragment>
   );
 }
 
