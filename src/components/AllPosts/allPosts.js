@@ -22,12 +22,14 @@ class AllPosts extends Component {
   render() {
     const { posts } = this.state;
     return (
-      <div>
-        <ul>
-          {posts.map(post => (
-            <PostItem key={post.id} post={post} />
-          ))}
-        </ul>
+      <div className="container">
+        <div className="row">
+          <div className="col-lg-8 col-md-10 mx-auto">
+            {posts.map(post => (
+              <PostItem key={post.id} post={post} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }

@@ -1,31 +1,32 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Moment from "react-moment";
 
 // eslint-disable-next-line react/prop-types
 function PostItem({ post }) {
   return (
-    <div className="card mb-4 mt-4">
-      <img
-        className="card-img-top"
-        src={post.imageUrl}
-        alt="post"
-        width="750"
-        height="300"
-      />
-      <div className="card-body">
-        <h2 className="card-text">{post.text}</h2>
-        <a href="#" className="btn btn-primary">
-          Read More &rarr;
+    <Fragment>
+      <div className="post-preview">
+        <a href="#">
+          <h2 className="post-title">
+            {post.title
+              ? post.title
+              : "This is a title placeholder which should be filled with a good title"}
+          </h2>
+          <h3 className="post-subtitle">{post.text}</h3>
         </a>
+        <p className="post-meta">
+          Posted by
+          <a href="#"> 
+            {' '}
+            {post.user.name}
+            {' '}
+          </a> 
+          {' '}
+          <Moment>{post.time}</Moment>
+        </p>
       </div>
-      <div className="card-footer text-muted">
-        Posted 
-        {' '}
-        <Moment parse="YYYY-MM-DD HH:mm">{post.time}</Moment>
-        {" by "}
-        <a href="#">{post.user.name}</a>
-      </div>
-    </div>
+      <hr />
+    </Fragment>
   );
 }
 
