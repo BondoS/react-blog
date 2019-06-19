@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import {Header, Footer} from './components/layout';
 import Allposts from './components/AllPosts/allPosts';
@@ -6,7 +6,7 @@ import Register from './components/Register/Register';
 
 function App () {
   return (
-    <div className="container">
+    <Fragment>
       <Header />
       <div className="container">
         <Switch>
@@ -18,7 +18,7 @@ function App () {
         <Register /> */}
       </div>
       <Footer />
-    </div>
+    </Fragment>
   );
 }
 
