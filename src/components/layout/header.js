@@ -1,6 +1,7 @@
-import React, { Fragment } from "react";
+import React, {Fragment} from 'react';
+import {NavLink} from 'react-router-dom';
 
-export default function Header() {
+export default function Header () {
   return (
     <Fragment>
       <nav
@@ -8,9 +9,9 @@ export default function Header() {
         id="mainNav"
       >
         <div className="container">
-          <a className="navbar-brand" href="index.html">
+          <NavLink className="navbar-brand" to="/">
             Ask ME
-          </a>
+          </NavLink>
           <button
             className="navbar-toggler navbar-toggler-right"
             type="button"
@@ -26,19 +27,19 @@ export default function Header() {
           <div className="collapse navbar-collapse" id="navbarResponsive">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
-                <a className="nav-link active" href="#">
+                <NavLink className="nav-link active" to="/">
                   Home
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="about.html">
+                <NavLink className="nav-link" to="/register">
                   Login
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="post.html">
+                <NavLink className="nav-link" to="/register">
                   Register
-                </a>
+                </NavLink>
               </li>
             </ul>
           </div>

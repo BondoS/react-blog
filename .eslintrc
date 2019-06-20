@@ -2,8 +2,35 @@
   "env": {
     "browser": true
   },
-  "extends": ["airbnb", "prettier"],
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "parser": "babel-eslint",
   "rules": {
-    "react/jsx-filename-extension": [0]
+    "react/jsx-filename-extension": [
+      1,
+      {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    ],
+    "jsx-a11y/label-has-for": [
+      2,
+      {
+        "components": [
+          "Label"
+        ],
+        "required": {
+          "some": [
+            "nesting",
+            "id"
+          ]
+        },
+        "allowChildren": false
+      }
+    ]
   }
 }
