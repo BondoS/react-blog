@@ -7,8 +7,8 @@ export const authStart = () => {
     type: actionTypes.AUTH_START,
   };
 };
-export const authSuccess = ({id, imageUrl, name, username}) => {
-  console.log ('action authSuccess ', id, imageUrl, name, username);
+export const authSuccess = ({id, imageUrl, name, username, password}) => {
+  // console.log ('action authSuccess ', id, imageUrl, name, username);
 
   return {
     type: actionTypes.AUTH_SUCCESS,
@@ -16,6 +16,7 @@ export const authSuccess = ({id, imageUrl, name, username}) => {
     imageUrl,
     name,
     username,
+    password,
   };
 };
 export const authFail = error => {
@@ -37,7 +38,7 @@ export const auth = (name, username, password, imageUrl, isLoggedIn) => {
         ? 'https://homepages.cae.wisc.edu/~ece533/images/cat.png'
         : imageUrl,
     };
-    console.log (qs.stringify (authData));
+    // console.log (qs.stringify (authData));
     axios ({
       method: 'POST',
       data: qs.stringify (authData),
@@ -49,12 +50,8 @@ export const auth = (name, username, password, imageUrl, isLoggedIn) => {
       withCredentials: true,
     })
       .then (response => {
-        localStorage.setItem ('id', response.data.id);
-        localStorage.setItem ('imageUrl', response.data.imageUrl);
-        localStorage.setItem ('name', response.data.name);
-        localStorage.setItem ('username', response.data.username);
-        dispatch (authSuccess (response.data));
-        console.log (response.data);
+        dispatch (authSuccess (response.data, password));
+        // console.log (response.data);
       })
       .catch (err => {
         dispatch (authFail (err));

@@ -1,2 +1,2 @@
-/* eslint-disable */
-export { auth } from "./auth";
+export {auth} from './auth';
+export {login, logout} from './login';

@@ -11,19 +11,6 @@ import * as actions from '../../store/actions/index';
 class Register extends Component {
   state = {
     fields: {
-      name: {
-        elementType: 'input',
-        elementConfig: {
-          type: 'text',
-          placeholder: 'Your Name',
-        },
-        value: '',
-        validation: {
-          required: true,
-        },
-        valid: false,
-        touched: false,
-      },
       username: {
         elementType: 'input',
         elementConfig: {
@@ -51,20 +38,8 @@ class Register extends Component {
         valid: false,
         touched: false,
       },
-      imageUrl: {
-        elementType: 'file',
-        elementConfig: {
-          type: 'file',
-          placeholder: 'Upload Image',
-        },
-        value: '',
-        validation: {
-          required: false,
-        },
-        valid: false,
-        touched: false,
-      },
     },
+    loggedIn: false,
   };
 
   /* eslint-enable */
@@ -89,15 +64,9 @@ class Register extends Component {
 
   submitHandler = event => {
     event.preventDefault ();
-    const {onAuth} = this.props;
-    const {fields, loggedIn} = this.state;
-    onAuth (
-      fields.name.value,
-      fields.username.value,
-      fields.password.value,
-      fields.imageUrl.src,
-      loggedIn
-    );
+    const {onLogin} = this.props;
+    const {fields} = this.state;
+    onLogin (fields.username.value, fields.password.value);
   };
 
   /* eslint-disable */
@@ -133,13 +102,13 @@ class Register extends Component {
   }
 
   render () {
-    const {isSignedState, isLoading} = this.props;
+    const {isSignedState, isLoading, username} = this.props;
     const formElementsArray = [];
     const {fields} = this.state;
     const signedInText = isSignedState
-      ? `Signed In, ${localStorage.getItem ('username')}`
+      ? `Signed In, ${username}`
       : 'Signed Out';
-    console.log ('Register props', this.props);
+    console.log ('Login props', this.props);
     Object.keys (fields).forEach (key => {
       formElementsArray.push ({
         id: key,
@@ -177,7 +146,7 @@ class Register extends Component {
         <form onSubmit={this.submitHandler}>
           {form}
           <Button type="submit" btnType="Success">
-            Register
+            Sign In
           </Button>
           <div>{signedInText}</div>
         </form>
@@ -185,6 +154,7 @@ class Register extends Component {
     );
   }
 }
+/* eslint-enable */
 
 const mapStateToProps = state => {
   return {
@@ -193,26 +163,26 @@ const mapStateToProps = state => {
     userId: state.userId,
     username: state.username,
     name: state.name,
+    imageUrl: state.imageUrl,
+    password: state.password,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (name, username, password, imageUrl, isSignedState) =>
-      dispatch (
-        actions.auth (name, username, password, imageUrl, isSignedState)
-      ),
+    onLogin: (username, password) =>
+      dispatch (actions.login (username, password)),
   };
 };
 Register.propTypes = {
   isSignedState: PropTypes.bool,
-  onAuth: PropTypes.func,
+  onLogin: PropTypes.func,
   isLoading: PropTypes.bool,
 };
 
 Register.defaultProps = {
   isSignedState: false,
-  onAuth: PropTypes.func,
+  onLogin: PropTypes.func,
   isLoading: false,
 };
 
