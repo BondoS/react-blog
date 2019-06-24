@@ -2,11 +2,11 @@ import React, { Fragment } from "react";
 import Moment from "react-moment";
 
 // eslint-disable-next-line react/prop-types
-function PostItem({ post }) {
+function PostItem({ post, onPostItemClicked }) {
   return (
     <Fragment>
       <div className="post-preview">
-        <a href="#">
+        <a href="#" onClick={onPostItemClicked.bind(this, post.id)}>
           <h2 className="post-title">
             {post.title
               ? post.title
