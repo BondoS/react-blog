@@ -1,22 +1,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import axios from 'axios';
 import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
 import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 import Spinner from '../UI/Spinner/Spinner';
 
-/* eslint-disable */
-import * as actions from '../../store/actions/index';
-
-class Register extends Component {
+// /* eslint-disable */
+class AddPost extends Component {
   state = {
     fields: {
-      username: {
+      title: {
         elementType: 'input',
         elementConfig: {
           type: 'text',
-          placeholder: 'Your UserName',
+          placeholder: 'Title',
         },
         value: '',
         validation: {
@@ -25,11 +24,11 @@ class Register extends Component {
         valid: false,
         touched: false,
       },
-      password: {
+      desc: {
         elementType: 'input',
         elementConfig: {
-          type: 'password',
-          placeholder: 'Your Password',
+          type: 'text',
+          placeholder: 'Description',
         },
         value: '',
         validation: {
@@ -39,8 +38,21 @@ class Register extends Component {
         valid: false,
         touched: false,
       },
+      imageUrl: {
+        elementType: 'input',
+        elementConfig: {
+          type: 'text',
+          placeholder: 'Image Url',
+        },
+        value: '',
+        validation: {
+          required: false,
+        },
+        valid: false,
+        touched: false,
+      },
     },
-    loggedIn: false,
+    loading: false,
   };
 
   /* eslint-enable */
@@ -65,9 +77,42 @@ class Register extends Component {
 
   submitHandler = event => {
     event.preventDefault ();
-    const {onLogin} = this.props;
+    const {username, password, history} = this.props;
     const {fields} = this.state;
-    onLogin (fields.username.value, fields.password.value);
+    this.setState (state => {
+      return {...state, loading: true};
+    });
+
+    // Send a POST request
+    axios ({
+      method: 'post',
+      auth: {
+        username,
+        password,
+      },
+      url: 'http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify ({
+        title: fields.title.value,
+        text: fields.desc.value,
+        imageUrl: fields.imageUrl.value,
+      }),
+    })
+      .then (res => {
+        console.log (res.data);
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        history.push ('/');
+      })
+      .catch (err => {
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        console.log (err);
+      });
   };
 
   /* eslint-disable */
@@ -103,9 +148,9 @@ class Register extends Component {
   }
 
   render () {
-    const {isSignedState, isLoading, username} = this.props;
+    const {isSignedState, username} = this.props;
     const formElementsArray = [];
-    const {fields} = this.state;
+    const {fields, loading} = this.state;
     const signedInText = isSignedState
       ? `Signed In, ${username}`
       : 'Signed Out';
@@ -116,15 +161,6 @@ class Register extends Component {
         config: fields[key],
       });
     });
-
-    // for (const key in fields ()) {
-    //   if (fields.hasOwnProperty (key)) {
-    //     formElementsArray.push ({
-    //       id: key,
-    //       config: fields[key],
-    //     });
-    //   }
-    // }
 
     let form = formElementsArray.map (formElement => (
       <Input
@@ -139,7 +175,7 @@ class Register extends Component {
       />
     ));
 
-    if (isLoading) {
+    if (loading) {
       form = <Spinner />;
     }
     return (
@@ -147,10 +183,9 @@ class Register extends Component {
         <form onSubmit={this.submitHandler}>
           {form}
           <Button type="submit" btnType="Success">
-            Sign In
+            Save
           </Button>
           <div>{signedInText}</div>
-          {isSignedState ? <Redirect to="/" /> : ''}
         </form>
       </div>
     );
@@ -161,31 +196,23 @@ class Register extends Component {
 const mapStateToProps = state => {
   return {
     isSignedState: state.loggedIn,
-    isLoading: state.loading,
-    userId: state.userId,
     username: state.username,
-    name: state.name,
-    imageUrl: state.imageUrl,
     password: state.password,
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogin: (username, password) =>
-      dispatch (actions.login (username, password)),
-  };
-};
-Register.propTypes = {
+AddPost.propTypes = {
   isSignedState: PropTypes.bool,
-  onLogin: PropTypes.func,
-  isLoading: PropTypes.bool,
+  username: PropTypes.string,
+  password: PropTypes.string,
+  history: ReactRouterPropTypes.history,
 };
 
-Register.defaultProps = {
+AddPost.defaultProps = {
   isSignedState: false,
-  onLogin: PropTypes.func,
-  isLoading: false,
+  username: '',
+  password: '',
+  history: ReactRouterPropTypes.history,
 };
 
-export default connect (mapStateToProps, mapDispatchToProps) (Register);
+export default connect (mapStateToProps, null) (AddPost);

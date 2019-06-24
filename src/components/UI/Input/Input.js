@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import classes from "./Input.module.scss";
+import classes from './Input.module.scss';
 
 const Input = ({
   invalid,
@@ -11,44 +11,44 @@ const Input = ({
   elementConfig,
   value,
   changed,
-  label
+  label,
 }) => {
   let inputElement = null;
   const inputClasses = [classes.InputElement];
 
   if (!invalid && shouldValidate && touched) {
-    inputClasses.push(classes.Invalid);
+    inputClasses.push (classes.Invalid);
   }
 
   switch (elementType) {
-    case "input":
+    case 'input':
       inputElement = (
         <input
-          className={inputClasses.join(" ")}
+          className={inputClasses.join (' ')}
           {...elementConfig}
           value={value}
           onChange={changed}
         />
       );
       break;
-    case "textarea":
+    case 'textarea':
       inputElement = (
         <textarea
-          className={inputClasses.join(" ")}
+          className={inputClasses.join (' ')}
           {...elementConfig}
           value={value}
           onChange={changed}
         />
       );
       break;
-    case "select":
+    case 'select':
       inputElement = (
         <select
-          className={inputClasses.join(" ")}
+          className={inputClasses.join (' ')}
           value={value}
           onChange={changed}
         >
-          {elementConfig.options.map(option => (
+          {elementConfig.options.map (option => (
             <option key={option.value} value={option.value}>
               {option.displayValue}
             </option>
@@ -59,7 +59,7 @@ const Input = ({
     default:
       inputElement = (
         <input
-          className={inputClasses.join(" ")}
+          className={inputClasses.join (' ')}
           {...elementConfig}
           value={value}
           onChange={changed}
@@ -82,21 +82,27 @@ Input.propTypes = {
   shouldValidate: PropTypes.bool,
   touched: PropTypes.bool,
   elementType: PropTypes.string,
-  elementConfig: PropTypes.node,
+  elementConfig: PropTypes.shape ({
+    type: PropTypes.string,
+    placeholder: PropTypes.string,
+  }),
   value: PropTypes.node,
-  changed: PropTypes.element,
-  label: PropTypes.string
+  changed: PropTypes.func,
+  label: PropTypes.string,
 };
 
 Input.defaultProps = {
   invalid: false,
   shouldValidate: false,
   touched: false,
-  elementType: "",
-  elementConfig: PropTypes.node,
+  elementType: '',
+  elementConfig: PropTypes.shape ({
+    type: 'input',
+    placeholder: 'Please insert text',
+  }),
   value: PropTypes.node,
-  changed: PropTypes.element,
-  label: ""
+  changed: PropTypes.func,
+  label: '',
 };
 
 export default Input;

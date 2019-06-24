@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 import Input from '../UI/Input/Input';
 import Button from '../UI/Button/Button';
 import Spinner from '../UI/Spinner/Spinner';
@@ -133,13 +134,13 @@ class Register extends Component {
   }
 
   render () {
-    const {isSignedState, isLoading} = this.props;
+    const {isSignedState, isLoading, username} = this.props;
     const formElementsArray = [];
     const {fields} = this.state;
     const signedInText = isSignedState
-      ? `Signed In, ${localStorage.getItem ('username')}`
+      ? `Signed In, ${username}`
       : 'Signed Out';
-    console.log ('Register props', this.props);
+    console.log (username);
     Object.keys (fields).forEach (key => {
       formElementsArray.push ({
         id: key,
@@ -163,7 +164,7 @@ class Register extends Component {
         elementConfig={formElement.config.elementConfig}
         value={formElement.config.value}
         invalid={formElement.config.valid}
-        shouldValidate={formElement.config.validation}
+        shouldValidate={formElement.config.validation ? true : false}
         touched={formElement.config.touched}
         changed={event => this.inputChangedHandler (event, formElement.id)}
       />
@@ -181,6 +182,7 @@ class Register extends Component {
           </Button>
           <div>{signedInText}</div>
         </form>
+        {isSignedState ? <Redirect to="/" /> : ''}
       </div>
     );
   }
@@ -193,6 +195,8 @@ const mapStateToProps = state => {
     userId: state.userId,
     username: state.username,
     name: state.name,
+    imageUrl: state.imageUrl,
+    password: state.password,
   };
 };
 
