@@ -3,7 +3,6 @@ import {NavLink} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import a from './header.module.css';
-import * as actions from '../../store/actions/index';
 
 /* eslint-disable */
 class Header extends Component {
@@ -12,11 +11,18 @@ class Header extends Component {
 
     const user = JSON.parse (localStorage.getItem ('user'));
     const navItems = typeof user !== 'undefined' && user
-      ? <li className="nav-item">
-          <a className="nav-link" onClick={() => onLogout ()}>
-            Logout
-          </a>
-        </li>
+      ? <Fragment>
+          <li className="nav-item">
+            <NavLink className="nav-link" to="/post/add">
+              Add Post
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to="/logout">
+              Logout
+            </NavLink>
+          </li>
+        </Fragment>
       : <Fragment>
           <li className="nav-item">
             <NavLink className="nav-link" to="/login">
@@ -89,20 +95,12 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onLogout: () => dispatch (actions.logout ()),
-  };
-};
-
 Header.propTypes = {
   isSignedState: PropTypes.bool,
-  onLogout: PropTypes.func,
 };
 
 Header.defaultProps = {
   isSignedState: false,
-  onLogout: PropTypes.func,
 };
 
-export default connect (mapStateToProps, mapDispatchToProps) (Header);
+export default connect (mapStateToProps) (Header);
