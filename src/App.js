@@ -15,6 +15,7 @@ class App extends Component {
   }
 
   onPostItemClicked = id => {
+    console.log(id);
     this.setState({ postid: id });
   };
 
@@ -27,15 +28,21 @@ class App extends Component {
             <Route
               path="/"
               exact
-              component={Allposts}
-              onPostItemClicked={this.onPostItemClicked}
+              render={props => (
+                <Allposts
+                  {...props}
+                  onPostItemClicked={this.onPostItemClicked}
+                />
+              )}
             />
+
             <Route path="/register" component={Register} />
             <Route path="/login" component={Login} />
             <Route
-              path="/:post"
-              component={PostView}
-              postID={this.state.postid}
+              path="/:id"
+              render={props => (
+                <PostView {...props} postID={this.state.postid} />
+              )}
             />
           </Switch>
         </div>
