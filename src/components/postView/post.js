@@ -1,29 +1,33 @@
-import React, { Component } from "react";
-import "./post.css";
-import axios from "axios";
+import React, {Component} from 'react';
+import './post.css';
+import axios from 'axios';
 
 export default class PostView extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super (props);
     this.state = {
-      post: {},
-      postID: this.props.match.params.id
+      post: {
+        user: {},
+      },
+      postID: this.props.match.params.id,
     };
   }
 
-  componentDidMount() {
-    const { postID } = this.state;
+  componentDidMount () {
+    const {postID} = this.state;
     axios
-      .get(`http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`)
-      .then(res => {
-        this.setState({ post: res.data });
+      .get (
+        `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`
+      )
+      .then (res => {
+        this.setState ({post: res.data});
       })
-      .catch(err => console.log(err));
+      .catch (err => console.log (err));
   }
 
-  render() {
-    const { post } = this.state;
-    console.log(post);
+  render () {
+    const {post} = this.state;
+    console.log (post);
     return (
       <div className="container">
         <div className="row">
@@ -50,6 +54,7 @@ export default class PostView extends Component {
                       sint occaecat cupidatat non proident, sunt in culpa qui
                       officia deserunt mollit anim id est laborum.
                     </p>
+                    {post.user.id}
                   </div>
                   <div className="line-divider" />
                 </div>
