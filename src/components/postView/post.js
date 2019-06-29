@@ -1,33 +1,43 @@
-import React, {Component} from 'react';
-import './post.css';
-import axios from 'axios';
+import React, { Component, Fragment } from "react";
+import "./post.css";
+import axios from "axios";
 
 export default class PostView extends Component {
-  constructor (props) {
-    super (props);
+  constructor(props) {
+    super(props);
     this.state = {
       post: {
-        user: {},
+        user: {}
       },
-      postID: this.props.match.params.id,
+      postID: this.props.match.params.id
     };
   }
 
-  componentDidMount () {
-    const {postID} = this.state;
+  componentDidMount() {
+    const { postID } = this.state;
     axios
-      .get (
-        `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`
-      )
-      .then (res => {
-        this.setState ({post: res.data});
+      .get(`http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`)
+      .then(res => {
+        this.setState({ post: res.data });
       })
-      .catch (err => console.log (err));
+      .catch(err => console.log(err));
   }
 
-  render () {
-    const {post} = this.state;
-    console.log (post);
+  render() {
+    const { post } = this.state;
+    const user = JSON.parse(localStorage.getItem("user"));
+    const controlButtons =
+      typeof user !== "undefined" && user ? (
+        <Fragment>
+          <button type="button" className="btn btn-warning btn-sm">
+            Edit post
+          </button>
+          <button type="button" className="btn btn-danger btn-sm">
+            Delete Post
+          </button>
+        </Fragment>
+      ) : null;
+
     return (
       <div className="container">
         <div className="row">
@@ -35,28 +45,20 @@ export default class PostView extends Component {
             <div className="post-content">
               <div className="post-container">
                 <img
-                  src="https://bootdey.com/img/Content/avatar/avatar6.png"
+                  src={post.user.imageUrl}
                   alt="user"
                   className="rounded pull-left"
+                  width="215"
+                  height="215"
                 />
+                <h4 className="offset-md-1">{post.user.name}</h4>
                 <div className="post-detail">
-                  <h5> Alexis Clark</h5>
                   <div className="line-divider" />
                   <div className="post-text">
-                    <p>
-                      {post.title}
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident, sunt in culpa qui
-                      officia deserunt mollit anim id est laborum.
-                    </p>
-                    {post.user.id}
+                    <p>{post.title}</p>
                   </div>
                   <div className="line-divider" />
+                  <div className="row">{controlButtons}</div>
                 </div>
               </div>
             </div>
