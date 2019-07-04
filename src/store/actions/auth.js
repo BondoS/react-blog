@@ -50,7 +50,7 @@ export const auth = (name, username, password, imageUrl, isLoggedIn) => {
       withCredentials: true,
     })
       .then (response => {
-        dispatch (authSuccess (response.data, password));
+        dispatch (authSuccess ({...response.data, password}));
         // console.log (response.data);
       })
       .catch (err => {
