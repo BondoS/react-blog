@@ -1,28 +1,61 @@
-import React, {Fragment} from 'react';
+import React, {Component, Fragment} from 'react';
 import {Route, Switch} from 'react-router-dom';
 import {Header, Footer} from './components/layout';
 import Allposts from './components/AllPosts/allPosts';
 import Register from './components/Register/Register';
 import Login from './components/Login/Login';
+import PostView from './components/postView/post';
+import {logout} from './store/actions';
 import AddPost from './components/AddPost/AddPost';
-import Logout from './components/Logout/Logout';
 
-function App () {
-  return (
-    <Fragment>
-      <Header />
-      <div className="container">
-        <Switch>
-          <Route path="/" exact component={Allposts} />
-          <Route path="/register" component={Register} />
-          <Route path="/login" component={Login} />
-          <Route path="/logout" component={Logout} />
-          <Route path="/post/add" component={AddPost} />
-        </Switch>
-      </div>
-      <Footer />
-    </Fragment>
-  );
+class App extends Component {
+  constructor () {
+    super ();
+    this.state = {
+      postid: '',
+    };
+  }
+
+  onPostItemClicked = id => {
+    console.log (id);
+    this.setState ({postid: id});
+  };
+
+  /* eslint-disable */
+
+  render () {
+    return (
+      <Fragment>
+        <Header />
+        <div className="container-fluid">
+          <Switch>
+            <Route
+              path="/"
+              exact
+              render={props => (
+                <Allposts
+                  {...props}
+                  onPostItemClicked={this.onPostItemClicked}
+                />
+              )}
+            />
+
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route path="/logout" component={logout} />
+            <Route path="/post/add" component={AddPost} />
+            <Route
+              path="/:id"
+              render={props => (
+                <PostView {...props} postID={this.state.postid} />
+              )}
+            />
+          </Switch>
+        </div>
+        <Footer />
+      </Fragment>
+    );
+  }
 }
 
 export default App;
