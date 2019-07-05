@@ -7,6 +7,7 @@ import Login from './components/Login/Login';
 import PostView from './components/postView/post';
 import {logout} from './store/actions';
 import AddPost from './components/AddPost/AddPost';
+import EditPost from './components/EditPost/EditPost';
 
 class App extends Component {
   constructor () {
@@ -45,11 +46,19 @@ class App extends Component {
             <Route path="/logout" component={logout} />
             <Route path="/post/add" component={AddPost} />
             <Route
+              path="/post/edit/:id"
+              render={props => (
+                <EditPost {...props} postID={this.state.postid} />
+              )}
+            />
+            <Route
               path="/:id"
               render={props => (
                 <PostView {...props} postID={this.state.postid} />
               )}
             />
+            ;
+
           </Switch>
         </div>
         <Footer />

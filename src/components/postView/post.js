@@ -4,6 +4,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ReactRouterPropTypes from 'react-router-prop-types';
+import {NavLink} from 'react-router-dom';
 import Spinner from '../UI/Spinner/Spinner';
 
 /* eslint-disable */
@@ -73,9 +74,12 @@ class PostView extends Component {
     const user = JSON.parse (localStorage.getItem ('user'));
     const controlButtons = typeof user !== 'undefined' && user
       ? <Fragment>
-          <button type="button" className="btn btn-warning btn-sm">
+          <NavLink
+            to={'/post/edit/' + postID}
+            className="btn btn-warning btn-sm"
+          >
             Edit post
-          </button>
+          </NavLink>
           <button
             type="button"
             onClick={this.deletePost}
@@ -102,10 +106,13 @@ class PostView extends Component {
                   <h4 className="offset-md-1">{post.user.name}</h4>
                   <div className="post-detail">
                     <div className="line-divider" />
+                    <div className="line-divider" />
                     <div className="post-text">
                       <p>{post.title}</p>
                     </div>
-                    <div className="line-divider" />
+                    <div className="post-text">
+                      <p>{post.text}</p>
+                    </div>
                     <div className="row">{controlButtons}</div>
                   </div>
                 </div>
