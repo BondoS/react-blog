@@ -6,6 +6,9 @@ import {connect} from 'react-redux';
 import ReactRouterPropTypes from 'react-router-prop-types';
 import {NavLink} from 'react-router-dom';
 import Spinner from '../UI/Spinner/Spinner';
+import Comment from '../Comment/Comment';
+import Input from '../UI/Input/Input';
+import Button from '../UI/Button/Button';
 
 /* eslint-disable */
 
@@ -18,17 +21,49 @@ class PostView extends Component {
       },
       postID: this.props.match.params.id,
       loading: false,
+      comments: [
+        {
+          user: {
+            imageUrl: '',
+          },
+        },
+      ],
     };
   }
 
   componentDidMount () {
     const {postID} = this.state;
+
+    axios
+      .all ([
+        axios.get (
+          `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`
+        ),
+        axios.get (
+          `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}/comments`
+        ),
+      ])
+      .then (
+        axios.spread ((res1, res2) => {
+          this.setState ({post: res1.data, comments: res2.data});
+        })
+      );
+  }
+
+  componentDidUpdate () {
+    const {postID} = this.state;
+
     axios
       .get (
-        `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}`
+        `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}/comments`
       )
       .then (res => {
-        this.setState ({post: res.data});
+        this.setState (prevState => {
+          return {
+            ...prevState,
+            comments: res.data,
+          };
+        });
       })
       .catch (err => console.log (err));
   }
@@ -69,10 +104,78 @@ class PostView extends Component {
     }
   };
 
+  submitCommentHandler = event => {
+    event.preventDefault ();
+    const {username, password, history} = this.props;
+    const {post} = this.state;
+    this.setState (state => {
+      return {...state, loading: true};
+    });
+
+    // Send a POST request
+    axios ({
+      method: 'post',
+      auth: {
+        username,
+        password,
+      },
+      url: `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/comments`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify ({
+        text: event.target[0].value,
+        post: {
+          id: post.id,
+        },
+      }),
+    })
+      .then (res => {
+        console.log (res.data);
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        history.push (`/${this.props.match.params.id}`);
+      })
+      .catch (err => {
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        console.log (err);
+      });
+  };
+
   render () {
+    const {isSignedState} = this.props;
+
+    let addComment = isSignedState
+      ? <form onSubmit={this.submitCommentHandler}>
+          <div className="container">
+            <div className="row">
+              <div className="offset-md-2 col-md-9">
+                <form>
+                  <div className="form-group">
+                    <label for="exampleInputEmail1">Add Comment</label>
+                    <input
+                      type="textarea"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      placeholder="Write your comment here"
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary btn-sm">
+                    Submit
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </form>
+      : '';
     const {post, postID, loading} = this.state;
     const user = JSON.parse (localStorage.getItem ('user'));
-    const controlButtons = typeof user !== 'undefined' && user
+    const controlButtons = typeof user !== 'undefined' &&
+      user.id === post.user.id
       ? <Fragment>
           <NavLink
             to={'/post/edit/' + postID}
@@ -118,6 +221,12 @@ class PostView extends Component {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="container">
+            <div>{addComment}</div>
+            {this.state.comments.map (item => (
+              <Comment key={item.id} item={item} />
+            ))}
           </div>
         </div>;
     return content;
