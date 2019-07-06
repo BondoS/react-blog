@@ -1,98 +1,98 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
-import Input from '../UI/Input/Input';
-import Button from '../UI/Button/Button';
-import Spinner from '../UI/Spinner/Spinner';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+import Input from "../UI/Input/Input";
+import Button from "../UI/Button/Button";
+import Spinner from "../UI/Spinner/Spinner";
 
 /* eslint-disable */
-import * as actions from '../../store/actions/index';
+import * as actions from "../../store/actions/index";
 
 class Register extends Component {
   state = {
     fields: {
       name: {
-        elementType: 'input',
+        elementType: "input",
         elementConfig: {
-          type: 'text',
-          placeholder: 'Your Name',
+          type: "text",
+          placeholder: "Your Name"
         },
-        value: '',
+        value: "",
         validation: {
-          required: true,
+          required: true
         },
         valid: false,
-        touched: false,
+        touched: false
       },
       username: {
-        elementType: 'input',
+        elementType: "input",
         elementConfig: {
-          type: 'text',
-          placeholder: 'Your UserName',
+          type: "text",
+          placeholder: "Your UserName"
         },
-        value: '',
+        value: "",
         validation: {
-          required: true,
+          required: true
         },
         valid: false,
-        touched: false,
+        touched: false
       },
       password: {
-        elementType: 'input',
+        elementType: "input",
         elementConfig: {
-          type: 'password',
-          placeholder: 'Your Password',
+          type: "password",
+          placeholder: "Your Password"
         },
-        value: '',
+        value: "",
         validation: {
           required: true,
-          minLength: 6,
+          minLength: 6
         },
         valid: false,
-        touched: false,
+        touched: false
       },
       imageUrl: {
-        elementType: 'file',
+        elementType: "file",
         elementConfig: {
-          type: 'file',
-          placeholder: 'Upload Image',
+          type: "file",
+          placeholder: "Upload Image"
         },
-        value: '',
+        value: "",
         validation: {
-          required: false,
+          required: false
         },
         valid: false,
-        touched: false,
-      },
-    },
+        touched: false
+      }
+    }
   };
 
   /* eslint-enable */
 
   inputChangedHandler = (event, fieldName) => {
-    const {fields} = this.state;
+    const { fields } = this.state;
 
     const updatedControls = {
       ...fields,
       [fieldName]: {
         ...fields[fieldName],
         value: event.target.value,
-        valid: this.checkValidity (
+        valid: this.checkValidity(
           event.target.value,
           fields[fieldName].validation
         ),
-        touched: true,
-      },
+        touched: true
+      }
     };
-    this.setState ({fields: updatedControls});
+    this.setState({ fields: updatedControls });
   };
 
   submitHandler = event => {
-    event.preventDefault ();
-    const {onAuth} = this.props;
-    const {fields, loggedIn} = this.state;
-    onAuth (
+    event.preventDefault();
+    const { onAuth } = this.props;
+    const { fields, loggedIn } = this.state;
+    onAuth(
       fields.name.value,
       fields.username.value,
       fields.password.value,
@@ -102,14 +102,14 @@ class Register extends Component {
   };
 
   /* eslint-disable */
-  checkValidity (value, rules) {
+  checkValidity(value, rules) {
     let isValid = true;
     if (!rules) {
       return true;
     }
 
     if (rules.required) {
-      isValid = value.trim () !== '' && isValid;
+      isValid = value.trim() !== "" && isValid;
     }
 
     if (rules.minLength) {
@@ -122,29 +122,29 @@ class Register extends Component {
 
     if (rules.isEmail) {
       const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test (value) && isValid;
+      isValid = pattern.test(value) && isValid;
     }
 
     if (rules.isNumeric) {
       const pattern = /^\d+$/;
-      isValid = pattern.test (value) && isValid;
+      isValid = pattern.test(value) && isValid;
     }
 
     return isValid;
   }
 
-  render () {
-    const {isSignedState, isLoading, username} = this.props;
+  render() {
+    const { isSignedState, isLoading, username } = this.props;
     const formElementsArray = [];
-    const {fields} = this.state;
+    const { fields } = this.state;
     const signedInText = isSignedState
       ? `Signed In, ${username}`
-      : 'Signed Out';
-    console.log (username);
-    Object.keys (fields).forEach (key => {
-      formElementsArray.push ({
+      : "Signed Out";
+    console.log(username);
+    Object.keys(fields).forEach(key => {
+      formElementsArray.push({
         id: key,
-        config: fields[key],
+        config: fields[key]
       });
     });
 
@@ -157,7 +157,7 @@ class Register extends Component {
     //   }
     // }
 
-    let form = formElementsArray.map (formElement => (
+    let form = formElementsArray.map(formElement => (
       <Input
         key={formElement.id}
         elementType={formElement.config.elementType}
@@ -166,7 +166,7 @@ class Register extends Component {
         invalid={formElement.config.valid}
         shouldValidate={formElement.config.validation ? true : false}
         touched={formElement.config.touched}
-        changed={event => this.inputChangedHandler (event, formElement.id)}
+        changed={event => this.inputChangedHandler(event, formElement.id)}
       />
     ));
 
@@ -177,12 +177,12 @@ class Register extends Component {
       <div>
         <form onSubmit={this.submitHandler}>
           {form}
-          <Button type="submit" btnType="Success">
+          <button type="submit" class="btn btn-primary">
             Register
-          </Button>
+          </button>
           <div>{signedInText}</div>
         </form>
-        {isSignedState ? <Redirect to="/" /> : ''}
+        {isSignedState ? <Redirect to="/" /> : ""}
       </div>
     );
   }
@@ -196,28 +196,29 @@ const mapStateToProps = state => {
     username: state.username,
     name: state.name,
     imageUrl: state.imageUrl,
-    password: state.password,
+    password: state.password
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onAuth: (name, username, password, imageUrl, isSignedState) =>
-      dispatch (
-        actions.auth (name, username, password, imageUrl, isSignedState)
-      ),
+      dispatch(actions.auth(name, username, password, imageUrl, isSignedState))
   };
 };
 Register.propTypes = {
   isSignedState: PropTypes.bool,
   onAuth: PropTypes.func,
-  isLoading: PropTypes.bool,
+  isLoading: PropTypes.bool
 };
 
 Register.defaultProps = {
   isSignedState: false,
   onAuth: PropTypes.func,
-  isLoading: false,
+  isLoading: false
 };
 
-export default connect (mapStateToProps, mapDispatchToProps) (Register);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Register);
