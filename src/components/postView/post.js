@@ -21,7 +21,13 @@ class PostView extends Component {
       },
       postID: this.props.match.params.id,
       loading: false,
-      comments: [],
+      comments: [
+        {
+          user: {
+            imageUrl: '',
+          },
+        },
+      ],
     };
   }
 
@@ -42,6 +48,24 @@ class PostView extends Component {
           this.setState ({post: res1.data, comments: res2.data});
         })
       );
+  }
+
+  componentDidUpdate () {
+    const {postID} = this.state;
+
+    axios
+      .get (
+        `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts/${postID}/comments`
+      )
+      .then (res => {
+        this.setState (prevState => {
+          return {
+            ...prevState,
+            comments: res.data,
+          };
+        });
+      })
+      .catch (err => console.log (err));
   }
 
   deletePost = () => {
@@ -80,6 +104,47 @@ class PostView extends Component {
     }
   };
 
+  submitCommentHandler = event => {
+    event.preventDefault ();
+    const {username, password, history} = this.props;
+    const {post} = this.state;
+    this.setState (state => {
+      return {...state, loading: true};
+    });
+
+    // Send a POST request
+    axios ({
+      method: 'post',
+      auth: {
+        username,
+        password,
+      },
+      url: `http://issr-dev.eu-west-1.elasticbeanstalk.com/api/comments`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify ({
+        text: event.target[0].value,
+        post: {
+          id: post.id,
+        },
+      }),
+    })
+      .then (res => {
+        console.log (res.data);
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        history.push (`/${this.props.match.params.id}`);
+      })
+      .catch (err => {
+        this.setState (state => {
+          return {...state, loading: false};
+        });
+        console.log (err);
+      });
+  };
+
   render () {
     const {isSignedState} = this.props;
 
@@ -92,10 +157,9 @@ class PostView extends Component {
                   <div className="form-group">
                     <label for="exampleInputEmail1">Add Comment</label>
                     <input
-                      type="email"
+                      type="textarea"
                       className="form-control"
                       id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
                       placeholder="Write your comment here"
                     />
                   </div>
