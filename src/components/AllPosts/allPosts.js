@@ -10,15 +10,15 @@ class AllPosts extends Component {
       posts: [],
     };
   }
-
-  componentDidMount () {
+  componentDidMount() {
     axios
-      .get ('http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts')
-      .then (res => {
-        this.setState ({posts: res.data});
+      .get('http://issr-dev.eu-west-1.elasticbeanstalk.com/api/posts')
+      .then(res => {
+        this.setState({ posts: res.data });
       })
-      .catch (err => console.log (err));
+      .catch(err => console.log(err));
   }
+
 
   render () {
     const {posts} = this.state;
